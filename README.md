@@ -105,7 +105,7 @@ Steel-Grade-Analysis/
 
 Clone the repository
 
-git clone https://github.com/your-username/steel-grade-analysis.git
+git clone https://github.com/Prajwal3208/Steel-Grade-Analysis-Project-
 
 
 Install required libraries
