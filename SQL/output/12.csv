@@ -1,0 +1,31 @@
+Trigger,Event,Table,Statement,Timing,Created,sql_mode,Definer,character_set_client,collation_connection,"Database Collation"
+trg_missing_composition_check,INSERT,quality_analysis,"BEGIN
+    DECLARE missing_list TEXT DEFAULT '';
+
+    IF NEW.C IS NULL OR NEW.C = '' THEN
+        SET missing_list = CONCAT(missing_list, 'C, ');
+    END IF;
+    IF NEW.SI IS NULL OR NEW.SI = '' THEN
+        SET missing_list = CONCAT(missing_list, 'SI, ');
+    END IF;
+    IF NEW.MN IS NULL OR NEW.MN = '' THEN
+        SET missing_list = CONCAT(missing_list, 'MN, ');
+    END IF;
+    IF NEW.P IS NULL OR NEW.P = '' THEN
+        SET missing_list = CONCAT(missing_list, 'P, ');
+    END IF;
+    IF NEW.S IS NULL OR NEW.S = '' THEN
+        SET missing_list = CONCAT(missing_list, 'S, ');
+    END IF;
+
+    IF missing_list <> '' THEN
+        INSERT INTO composition_audit_log (GRADE_ID, GRADE, HEATNO, Missing_Fields)
+        SELECT 
+            hm.GRADE_ID,
+            hm.GRADE,
+            NEW.HEATNO,
+            LEFT(missing_list, LENGTH(missing_list) - 2)
+        FROM heat_master hm
+        WHERE hm.HEATNO = NEW.HEATNO;
+    END IF;
+END",AFTER,"2025-10-30 16:31:55.48","ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION",root@localhost,utf8mb4,utf8mb4_0900_ai_ci,utf8mb4_0900_ai_ci
